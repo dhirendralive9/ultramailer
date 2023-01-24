@@ -1,11 +1,36 @@
 const express = require('express');
 const app = express();
 const port = 1999;
+const data = require("./routes/data");
+const errors = require("./routes/errors");
+const status = require("./routes/status");
 
-app.get("/",(req,res)=>{
+const cors = require('cors');
+
+app.use(cors());
+ 
+app.get("/",(req,res)=>{                  //home page
     res.json("This is the newest version of mailer");
 });
+//-------------------------------------
+app.get("/list",data.listinfo);          //list related end point
+app.get("/template",data.templatesCheck);  //template related end point
+app.get("/queue",data.queuecheck);         //queue related end point
+app.get("/smtp",data.smtpcheck);        //smtp end point
+app.get("/phone",data.phoneCheck);    //phone end point
+//-------------------------------------
+
+app.get("/errors",errors.emailfetch);  //get all the errors
+
+//-------------------------------------
+
+app.get("/status",status.statusFetch);  //get all the status
+
+//-------------------------------------
+app.get("/start",data.start);
+
+
 
 app.listen(port,()=>{
     console.log("Mailing is runing on port:",port);
-})
+});
