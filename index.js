@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 1999;
+const port = 2000;
 const data = require("./routes/data");
 const errors = require("./routes/errors");
 const status = require("./routes/status");
