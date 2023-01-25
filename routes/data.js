@@ -11,22 +11,66 @@ var queue = JSON.parse(fs.readFileSync("./data/queue.json"));
 var smtp = JSON.parse(fs.readFileSync("./data/stmp.json"));
 var phone = JSON.parse(fs.readFileSync("./data/phone.json"));
 //------------------------------------------------------------------
-
-console.log("Mailer Status:",system.toggle)
+//console.log(templates);
+console.log("Mailer Status:",system.toggle);
 var sitrap;
 var code;
 //console.log(list)
+var pNum ='';
+var tPnum = 0;
+
+var tmp = {};
+var ttmp =0;
+
+var numChanger = () =>{
+    phone = JSON.parse(fs.readFileSync("./data/phone.json"));
+    if(phone.length == 1){
+      pNum = phone[0][0];
+    }else if(phone.length ==2){
+        if(tPnum ==0){
+            pNum = phone[1][1];
+            tPnum=1;
+        }else{
+            pNum = phone[0][0];
+            tPnum =0;
+        }
+    }
+}
+const tempChanger = ()=>{
+    templates = JSON.parse(fs.readFileSync("./data/templates.json"));
+    if(templates.length ==1){
+        tmp = templates[0];
+    }else if(templates.length >= 2){
+        if(ttmp == 0){
+            tmp = templates[1];
+            ttmp =1;
+        }else{
+            tmp = templates[0];
+            ttmp =0;
+        }
+    }
+}
+
 
 var startpoint=0;
 var endpoint = 50;
 var listCount = 0;
 var i;
-var interval = 1500;
+var interval = 2000;
 
 const mailsent =(data) =>{
-         nodemailer.mailMaker(data);
+        
+        numChanger();
+        tempChanger();
+        //console.log(pNum);
+        nodemailer.mailMaker(data,pNum,tmp);
 }
 
+module.exports.phn = ()=>{
+    return phone;
+}
+
+//console.log(tmp());
 
 const queueWriter = ()=>{
     queue.splice(0,1);
@@ -57,6 +101,7 @@ const start_mailer = ()=>{
   if(queue.length == 0 && smtp !=0){
     smtp.forEach(x => {
        for(i=startpoint;i<endpoint;i++){
+           numChanger();
            let sender = x.user;
            let pass = x.password;
            if(list[listCount]){
@@ -177,5 +222,7 @@ const response = (recall)=>{
     }
 }
 
+
 module.exports.response = response;
 module.exports.queueWriter = queueWriter;
+//module.exports.tmp = tmp;

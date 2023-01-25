@@ -20,7 +20,7 @@ app.get("/smtp",data.smtpcheck);        //smtp end point
 app.get("/phone",data.phoneCheck);    //phone end point
 //-------------------------------------
 
-app.get("/errors",errors.emailfetch);  //get all the errors
+app.get("/errors",errors.errorfetch);  //get all the errors
 
 //-------------------------------------
 

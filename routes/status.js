@@ -22,9 +22,9 @@ axios.get('https://api.ipify.org?format=json')
   });
 
 
-module.exports.writeStatus = (info)=>{
+module.exports.writeStatus = (info,num,tmp)=>{
     var id = status.length;
-   var newStatus = {"id":id,"server":ip,"status":"mail-sent","message":info};
+   var newStatus = {"id":id,"server":ip,"status":"mail-sent","message":info,"phone":num,"template":tmp.name};
   //  console.log(newStatus);
    status.push(newStatus);
    fs.writeFile(`./data/status.json`,JSON.stringify(status),error => console.log(error));

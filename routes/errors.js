@@ -5,7 +5,7 @@ var errors = JSON.parse(fs.readFileSync("./data/errors.json"));
 var failed = JSON.parse(fs.readFileSync("./data/failed.json"));
 var ids = JSON.parse(fs.readFileSync("./data/id_failed.json"));
 var relist = JSON.parse(fs.readFileSync("./data/relist.json"));
-
+var data = require("./data");
 
 
 
@@ -29,7 +29,7 @@ module.exports.write = (err,user,pass)=>{
     var newError = {"id":id,"server":ip,"user":user,"pass":pass,"status":"error","message":err};
     console.log(newError);
     errors.push(newError);
-    fs.writeFile(`./data/errors.json`,JSON.stringify(errorData),error => console.log(error));
+    fs.writeFile(`./data/errors.json`,JSON.stringify(errors),error => console.log(error));
  }
 
 module.exports.errorfetch = (req,res)=>{
@@ -63,6 +63,8 @@ module.exports.emailfetch = (req,res)=>{
     var newData = {"user":user,"pass":pass};
     ids.push(newData);
     fs.writeFile(`./data/id_failed.json`,JSON.stringify(ids),error => console.log(error));
+    data.queueWriter();
+    data.response("start");
  };
 
  module.exports.idfetch = (req,res)=>{
