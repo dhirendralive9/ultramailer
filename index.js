@@ -10,7 +10,7 @@ const cors = require('cors');
 app.use(cors());
  
 app.get("/",(req,res)=>{                  //home page
-    res.json("This is the newest version of mailer");
+    res.json("Updated version of Ultramailer is running. New updates coming soon.");
 });
 //-------------------------------------
 app.get("/list",data.listinfo);          //list related end point
