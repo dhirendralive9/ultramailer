@@ -45,3 +45,6 @@ data/templates.json
 data/system.json
 data/relist.json
 data/error.json
+data/api.json
+data/list_group.json
+data/stmp_groups.json
