@@ -1,6 +1,6 @@
 //const { query } = require("express");
 const fs = require("fs");
-
+const { v4: uuidv4 } = require('uuid');
 
 var system = require("./system");
 var nodemailer = require("./nodemailer");
@@ -10,6 +10,7 @@ var templates = JSON.parse(fs.readFileSync("./data/templates.json"));
 var queue = JSON.parse(fs.readFileSync("./data/queue.json"));
 var smtp = JSON.parse(fs.readFileSync("./data/stmp.json"));
 var phone = JSON.parse(fs.readFileSync("./data/phone.json"));
+var api = JSON.parse(fs.readFileSync("./data/api.json"));
 //------------------------------------------------------------------
 //console.log(templates);
 console.log("Mailer Status:",system.toggle);
@@ -53,7 +54,7 @@ const tempChanger = ()=>{
 
 
 var startpoint=0;
-var endpoint = 50;
+var endpoint = 24;
 var listCount = 0;
 var i;
 var interval = 2000;
@@ -128,7 +129,14 @@ const start_mailer = ()=>{
 //system.system_switch();
 //start_mailer();
 
-
+module.exports.apikey = (req,res)=>{
+    var len = api.length;
+    var key = uuidv4();
+    api.push({len:key});
+    console.log("a new api key is generated, please use document for endpoint references.");
+    fs.writeFileSync('./data/api.json',JSON.stringify(api),error=> console.log(error));
+    res.status(200).json({"status":"ok","message":"A new api key is generated","key":key});
+}
 
 
 

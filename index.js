@@ -4,10 +4,17 @@ const port = 2000;
 const data = require("./routes/data");
 const errors = require("./routes/errors");
 const status = require("./routes/status");
-
+var bodyParser = require('body-parser')
+const chalk = require('chalk');
 const cors = require('cors');
 
 app.use(cors());
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
  
 app.get("/",(req,res)=>{                  //home page
     res.json("Updated version of Ultramailer is running. New updates coming soon.");
@@ -29,8 +36,30 @@ app.get("/status",status.statusFetch);  //get all the status
 //-------------------------------------
 app.get("/start",data.start);
 
+//-------------------------------------
+app.get("/key",data.apikey);
 
+//------MillionVerifierApi functions--------------
+app.get('/api/ping',(req,res)=>{
+   res.status(200).json({
+    "success": true
+})
+})
 
+app.get('/api/get-lists',(req,res)=>{
+    res.status(200).json({"message":"Get the lists of all the data list"});
+})
+
+app.get('/api/get-list-contacts',(req,res)=>{
+    res.status(200).json({"message":"Get the lists of all the data list"});
+})
+
+app.post('/api/contacts-action',(req,res)=>{
+    console.log(req.body);
+    res.status(201).json();
+})
+
+//-----------------------------------------------------
 app.listen(port,()=>{
-    console.log("Mailing is runing on port:",port);
+    console.log(chalk.bgBlue("UltraMailer is runing on port:",port));
 });
