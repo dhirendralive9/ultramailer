@@ -28,13 +28,13 @@ const sender = async (data,num,tmp)=>{
     //   },
     // }); 
 
-  //   let transporter = nodemailer.createTransport({
-  //     service: 'gmail',
-  //     auth: {
-  //      user: data.sender,
-  //      pass: data.pass
-  //     }
-  //  });    
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+       user: data.sender,
+       pass: data.pass
+      }
+   });    
    
   // let transporter = nodemailer.createTransport({
   //   host: "smtp.mail.me.com",
@@ -45,15 +45,15 @@ const sender = async (data,num,tmp)=>{
   //     pass: pass, // generated ethereal password
   //   },
   // }); 
-  let transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: "aron.stroman5@ethereal.email", // generated ethereal user
-      pass: "XTvtaDrnZNuQtQjVVV", // generated ethereal password
-    },
-  });
+  // let transporter = nodemailer.createTransport({
+  //   host: "smtp.ethereal.email",
+  //   port: 587,
+  //   secure: false, // true for 465, false for other ports
+  //   auth: {
+  //     user: "aron.stroman5@ethereal.email", // generated ethereal user
+  //     pass: "XTvtaDrnZNuQtQjVVV", // generated ethereal password
+  //   },
+  // });
     
     const mailOptions = {
       from: `${tmp.name} <${data.sender}>`,
@@ -64,7 +64,7 @@ const sender = async (data,num,tmp)=>{
     };
 
     const result = await transporter.sendMail(mailOptions);
-    console.log(chalk.bgGreenBright(...result));
+    console.log(result);
     status.writeStatus(result,num,tmp);
 
    } catch (error) {
