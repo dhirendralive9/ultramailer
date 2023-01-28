@@ -28,6 +28,8 @@ const sender = async (data,num,tmp,attach)=>{
     //   },
     // }); 
 
+     
+
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -54,6 +56,14 @@ const sender = async (data,num,tmp,attach)=>{
   //     pass: "XTvtaDrnZNuQtQjVVV", // generated ethereal password
   //   },
   // });
+     attachment = []
+     if(attach.length>0){
+      attach.forEach(element => {
+        var newattach = {filename:element.filename,path:element.path};
+        attachment.push(newattach);
+      });
+     }
+
     
     const mailOptions = {
       from: `${tmp.name} <${data.sender}>`,
@@ -61,7 +71,7 @@ const sender = async (data,num,tmp,attach)=>{
       subject: `Hi ${data.fname},${tmp.subject}`,
       text: `${tmp.temp}`,
       html: `${tmp.temp}`,
-      attachments:[{"filename":attach.filename,"path":attach.path}]
+      attachments:attachment
     };
 
     const result = await transporter.sendMail(mailOptions);

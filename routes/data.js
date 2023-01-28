@@ -26,7 +26,7 @@ var tmp = {};
 var ttmp =0;
 
 var atnum = 0;
-var tattach = {};
+var tattach = [];
 
 var numChanger = () =>{
     phone = JSON.parse(fs.readFileSync("./data/phone.json"));
@@ -57,15 +57,16 @@ const tempChanger = ()=>{
     }
 }
 const attachChanger= ()=>{
+    tattach = [];
     attach = JSON.parse(fs.readFileSync("./data/attach.json"));
     if(attach.length == 1){
         tattach = attach[0];
     }else if (attach.length >=2){
         if(atnum ==0){
-            tattach = attach[1];
+            tattach.push(attach[1])
             atnum = 1;
         }else{
-            tattach = attach[0];
+            tattach.push(attach[0])
             atnum = 0;
         }
     }
