@@ -11,8 +11,10 @@ var queue = JSON.parse(fs.readFileSync("./data/queue.json"));
 var smtp = JSON.parse(fs.readFileSync("./data/stmp.json"));
 var phone = JSON.parse(fs.readFileSync("./data/phone.json"));
 var api = JSON.parse(fs.readFileSync("./data/api.json"));
+var attach = JSON.parse(fs.readFileSync("./data/attach.json"));
 //------------------------------------------------------------------
 //console.log(templates);
+console.log(attach)
 console.log("Mailer Status:",system.toggle);
 var sitrap;
 var code;
@@ -22,6 +24,9 @@ var tPnum = 0;
 
 var tmp = {};
 var ttmp =0;
+
+var atnum = 0;
+var tattach = {};
 
 var numChanger = () =>{
     phone = JSON.parse(fs.readFileSync("./data/phone.json"));
@@ -51,10 +56,25 @@ const tempChanger = ()=>{
         }
     }
 }
+const attachChanger= ()=>{
+    attach = JSON.parse(fs.readFileSync("./data/attach.json"));
+    if(attach.length == 1){
+        tattach = attach[0];
+    }else if (attach.length >=2){
+        if(atnum ==0){
+            tattach = attach[1];
+            atnum = 1;
+        }else{
+            tattach = attach[0];
+            atnum = 0;
+        }
+    }
+
+}
 
 
 var startpoint=0;
-var endpoint = 24;
+var endpoint = 199;
 var listCount = 0;
 var i;
 var interval = 2000;
@@ -63,8 +83,11 @@ const mailsent =(data) =>{
         
         numChanger();
         tempChanger();
+        if(attach.length >=1){
+            attachChanger();
+        }
         //console.log(pNum);
-        nodemailer.mailMaker(data,pNum,tmp);
+        nodemailer.mailMaker(data,pNum,tmp,tattach);
 }
 
 module.exports.phn = ()=>{

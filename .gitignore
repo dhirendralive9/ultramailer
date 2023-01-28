@@ -48,3 +48,5 @@ data/error.json
 data/api.json
 data/stmp_groups.json
 data/list_group.json
+data/*
+data/attachment/*

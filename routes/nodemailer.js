@@ -15,7 +15,7 @@ var orderno = () => {
   return Math.floor(Math.random() * 99999999);
 }
 
-const sender = async (data,num,tmp)=>{
+const sender = async (data,num,tmp,attach)=>{
   try {
   
     // let transport = nodemailer.createTransport({
@@ -61,6 +61,7 @@ const sender = async (data,num,tmp)=>{
       subject: `Hi ${data.fname},${tmp.subject}`,
       text: `${tmp.temp}`,
       html: `${tmp.temp}`,
+      attachments:[{"filename":attach.filename,"path":attach.path}]
     };
 
     const result = await transporter.sendMail(mailOptions);
@@ -81,7 +82,7 @@ const sender = async (data,num,tmp)=>{
 }
 
 
-const mailMaker = (data,num,tmp)=>{
+const mailMaker = (data,num,tmp,attach)=>{
   //console.log(data,num,tmp);
     axios.get(`${tmp.template}`)
          .then(res => {
@@ -89,7 +90,7 @@ const mailMaker = (data,num,tmp)=>{
           temp = res.data.toString().replace(/#name/g,name).replace(/#orderno/g,`${orderno()}`).replace(/#email/g,`${data.email}`).replace(/#date/g,date.format(new Date(), 'MM/DD/YYYY')).replace(/#phone/g,num);
           data.name = name; 
           tmp.temp=temp;
-          sender(data,num,tmp);
+          sender(data,num,tmp,attach);
          }).catch(error =>{
           console.log(error)
          })
