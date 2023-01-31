@@ -25,12 +25,55 @@ var get_list = (user)=>{
     var list_counts = []
     list_store.forEach(x =>{
         if(x.user == user){
-            list_counts.push({"id":x.id,"count":x.lists_count,"name":x.list_name});
+            var len = JSON.parse(fs.readFileSync(`${x.list_src}`))
+            list_counts.push({"id":x.id,"count":len.length,"name":x.list_name,"list_src":x.list_src});
         }
     })
     return list_counts;
 }
 
+var contacts_lists = (user,lists,listID,integer)=>{
+    var result = {};
+    result.contacts = [];
+    var data_fetched = [];
+    lists.forEach(x =>{
+        if(x.id == listID){
+          data_fetched = JSON.parse(fs.readFileSync(`${x.list_src}`));
+          result.id = x.id.toString();
+          result.name = x.name;
+          result.count= parseInt(x.count);
+          if(result.count<=10000){
+            result.page = parseInt(integer);
+            result.total_pages = parseInt(integer);
+            data_fetched.forEach(x =>{
+                result.contacts.push(x.email);
+            })
+          }else{
+            var q = (result.count/10000)+1;
+            var ttt = parseInt(q.toString().split(".")[0]);
+            result.total_pages = result.count%10000 == 0? result.count/10000:ttt;
+            var counter = 0;
+            var ordered = [];
+            for(var i=1;i<=ttt;i++){
+                var addcad = []
+                for(j=1;j<=10000;j++){
+                   if(data_fetched[counter]){
+                    addcad.push(data_fetched[counter].email)
+                   }
+                   counter++;
+                }
+                ordered[i] = addcad;
+            }
+            result.page = integer<=result.total_pages?parseInt(integer):0;
+            result.contacts.push(ordered[integer<=result.total_pages?parseInt(integer):0])
+          }
+         
+         
+    
+         }
+      })
+    return result;
+}
 
 var api_check = (key)=>{
     var result = {};
@@ -66,6 +109,23 @@ module.exports.api_get_list = (req,res)=>{
     }
  )
    }
+}
+
+module.exports.api_get_contacts_list = (req,res)=>{
+    if((api_check(req.query.api_key)).status == true){
+        var auth = (api_check(req.query.api_key));
+        var lists_count = get_list(auth.user);
+        var page = req.query.page;
+        var fetched_list = contacts_lists(auth,lists_count,req.query.list_id,page);
+        res.status(200).json(fetched_list);
+
+    }else{
+        res.status.json(
+            {
+                "error":"authentication failed"
+            }
+        )
+    }
 }
 
 
