@@ -42,9 +42,7 @@ app.get("/key",data.apikey);
 //------MillionVerifierApi functions--------------
 app.get('/api/ping',data.ping)
 
-app.get('/api/get-lists',(req,res)=>{
-    res.status(200).json({"message":"Get the lists of all the data list"});
-})
+app.get('/api/get-lists',data.api_get_list);
 
 app.get('/api/get-list-contacts',(req,res)=>{
     res.status(200).json({"message":"Get the lists of all the data list"});

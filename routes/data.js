@@ -12,6 +12,7 @@ var smtp = JSON.parse(fs.readFileSync("./data/stmp.json"));
 var phone = JSON.parse(fs.readFileSync("./data/phone.json"));
 var api = JSON.parse(fs.readFileSync("./data/api.json"));
 var attach = JSON.parse(fs.readFileSync("./data/attach.json"));
+var list_store = JSON.parse(fs.readFileSync("./data/list_group.json"));
 //------------------------------------------------------------------
 //console.log(templates);
 //console.log(attach)
@@ -20,11 +21,14 @@ var sitrap;
 var code;
 
 var api_check = (key)=>{
-    var result = false;
+    var result = {};
+    result.status = false;
     api.forEach(x =>{
         //console.log(x['key']==key)
         if(x['key'] == key){
-            result =  true;
+            console.log(`Ping Successfull for user: ${x.user}`);
+            x.status = true;
+            result = x;
         }
     })
     return result;
@@ -32,6 +36,29 @@ var api_check = (key)=>{
 
 //console.log(api_check("8ff33084-8f73-43c6-8492-00aefd61478b"));
 
+module.exports.api_get_list = (req,res)=>{
+    var list_counts = [];
+   if((api_check(req.query.api_key)).status == true){
+    //console.log((api_check(req.query.api_key)).status);
+    var auth_user = (api_check(req.query.api_key)).user;
+    list_store.forEach(x =>{
+        if(x.user == auth_user){
+            list_counts.push({"id":x.id,"count":x.lists_count,"name":x.list_name});
+        }
+    })
+
+    res.status(200).json({"page": 1,
+    "total_pages": 1,
+    "user":auth_user,
+    "lists":list_counts});
+   }else{
+    console.log((api_check(req.query.api_key)).status);
+     res.status(200).json({
+        "error": "api_key query is missing or invalid"
+    }
+ )
+   }
+}
 
 
 //console.log(list)
@@ -265,11 +292,13 @@ module.exports.start = (req,res)=>{
 
 module.exports.ping = (req,res)=>{
     //console.log(req.query.api_key);
-  if(api_check(req.query.api_key)== true){
+  if(api_check(req.query.api_key).status == true){
+    //console.log(api_check(req.query.api_key));
     res.status(200).json({
         "success": true
     })
   }else {
+    //console.log(api_check(req.query.api_key));
     res.status(200).json({
         "success": false
     })
