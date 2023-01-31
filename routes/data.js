@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 
 var system = require("./system");
 var nodemailer = require("./nodemailer");
+const chalk = require("chalk");
 //-----------------------------------------------------------------
 var list = JSON.parse(fs.readFileSync("./data/list.json"));
 var templates = JSON.parse(fs.readFileSync("./data/templates.json"));
@@ -20,13 +21,24 @@ console.log("Mailer Status:",system.toggle);
 var sitrap;
 var code;
 
+var get_list = (user)=>{
+    var list_counts = []
+    list_store.forEach(x =>{
+        if(x.user == user){
+            list_counts.push({"id":x.id,"count":x.lists_count,"name":x.list_name});
+        }
+    })
+    return list_counts;
+}
+
+
 var api_check = (key)=>{
     var result = {};
     result.status = false;
     api.forEach(x =>{
         //console.log(x['key']==key)
         if(x['key'] == key){
-            console.log(`Ping Successfull for user: ${x.user}`);
+            console.log(chalk.blue.bgWhite.bold(`Ping Successfull for user: ${x.user}`));
             x.status = true;
             result = x;
         }
@@ -41,11 +53,7 @@ module.exports.api_get_list = (req,res)=>{
    if((api_check(req.query.api_key)).status == true){
     //console.log((api_check(req.query.api_key)).status);
     var auth_user = (api_check(req.query.api_key)).user;
-    list_store.forEach(x =>{
-        if(x.user == auth_user){
-            list_counts.push({"id":x.id,"count":x.lists_count,"name":x.list_name});
-        }
-    })
+    list_counts = get_list(auth_user);
 
     res.status(200).json({"page": 1,
     "total_pages": 1,
