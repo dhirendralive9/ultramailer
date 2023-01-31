@@ -14,10 +14,26 @@ var api = JSON.parse(fs.readFileSync("./data/api.json"));
 var attach = JSON.parse(fs.readFileSync("./data/attach.json"));
 //------------------------------------------------------------------
 //console.log(templates);
-console.log(attach)
+//console.log(attach)
 console.log("Mailer Status:",system.toggle);
 var sitrap;
 var code;
+
+var api_check = (key)=>{
+    var result = false;
+    api.forEach(x =>{
+        //console.log(x['key']==key)
+        if(x['key'] == key){
+            result =  true;
+        }
+    })
+    return result;
+}
+
+//console.log(api_check("8ff33084-8f73-43c6-8492-00aefd61478b"));
+
+
+
 //console.log(list)
 var pNum ='';
 var tPnum = 0;
@@ -156,10 +172,12 @@ const start_mailer = ()=>{
 module.exports.apikey = (req,res)=>{
     var len = api.length;
     var key = uuidv4();
-    api.push({len:key});
+    var dsc = req.query.text?req.query.text:"no description"
+    var newkey = {id:len,"key":key,"description":dsc}
+    api.push(newkey);
     console.log("a new api key is generated, please use document for endpoint references.");
     fs.writeFileSync('./data/api.json',JSON.stringify(api),error=> console.log(error));
-    res.status(200).json({"status":"ok","message":"A new api key is generated","key":key});
+    res.status(200).json({"status":"ok","message":"A new api key is generated","description":dsc,"key":key});
 }
 
 
@@ -245,6 +263,18 @@ module.exports.start = (req,res)=>{
    
 }
 
+module.exports.ping = (req,res)=>{
+    //console.log(req.query.api_key);
+  if(api_check(req.query.api_key)== true){
+    res.status(200).json({
+        "success": true
+    })
+  }else {
+    res.status(200).json({
+        "success": false
+    })
+  }
+}
 const response = (recall)=>{
     if (recall == "start"){
         sendMail();
