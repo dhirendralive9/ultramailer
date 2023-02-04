@@ -46,10 +46,7 @@ app.get('/api/get-lists',data.api_get_list);
 
 app.get('/api/get-list-contacts',data.api_get_contacts_list);
 
-app.post('/api/contacts-action',(req,res)=>{
-    console.log(req.body);
-    res.status(201).json();
-})
+app.post('/api/contacts-action',data.contacts_actions);
 
 //-----------------------------------------------------
 app.listen(port,()=>{

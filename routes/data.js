@@ -14,6 +14,7 @@ var phone = JSON.parse(fs.readFileSync("./data/phone.json"));
 var api = JSON.parse(fs.readFileSync("./data/api.json"));
 var attach = JSON.parse(fs.readFileSync("./data/attach.json"));
 var list_store = JSON.parse(fs.readFileSync("./data/list_group.json"));
+var contacts_actions_record = JSON.parse(fs.readFileSync("./data/contact_actions.json"));
 //------------------------------------------------------------------
 //console.log(templates);
 //console.log(attach)
@@ -126,6 +127,26 @@ module.exports.api_get_contacts_list = (req,res)=>{
             }
         )
     }
+}
+
+const contact_action_handler = (object)=>{
+    contacts_actions_record.push(object);
+    fs.writeFileSync('./data/contact_actions.json',JSON.stringify(contacts_actions_record));
+    contacts_actions_record = JSON.parse(fs.readFileSync('./data/contact_actions.json'));
+}
+
+
+module.exports.contacts_actions = (req,res)=>{
+    var newRecord = {};
+    console.log("Auth Status: ",(api_check(req.query.api_key)).status);
+    if((api_check(req.query.api_key)).status == true){
+        newRecord.list_id = req.body.list_id;
+        newRecord.action = req.body.action;
+        newRecord.location = `./data/actions/${req.body.list_id}_${req.body.action}.json`;
+        contact_action_handler(newRecord);
+        fs.writeFileSync(`./data/actions/${req.body.list_id+req.body.action}.json`,JSON.stringify(req.body));
+    }
+    res.status(201).json();
 }
 
 
